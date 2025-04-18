@@ -6,7 +6,7 @@ import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/model/itinerary.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
 
 class SuggestionItinerary extends StatefulWidget {
   final List<Itinerary> itineraries;
@@ -34,6 +34,7 @@ class _SuggestionItineraryState extends State<SuggestionItinerary>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
       appBar: AppBar(
         backgroundColor: CustomColor.primary,
         title: const Text(

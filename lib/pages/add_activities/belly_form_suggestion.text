@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iterasi1/pages/add_activities/suggestion_Itinerary.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
 
 import '../../model/activity.dart';
 

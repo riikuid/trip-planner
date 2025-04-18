@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
 
 import '../../model/activity.dart';
 

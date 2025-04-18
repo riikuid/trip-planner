@@ -5,7 +5,7 @@ import 'package:iterasi1/model/day.dart';
 import 'package:iterasi1/model/itinerary.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
 import 'package:provider/provider.dart';
 
 class SuggestionPage extends StatefulWidget {

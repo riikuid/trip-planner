@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
+import 'package:iterasi1/resource/theme.dart';
 
 import 'itinerary_list.dart';
 
@@ -21,7 +22,6 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacementNamed(context, ItineraryList.route);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: CustomColor.buttonColor,
               ),
             ),
-
             AnimatedTextKit(
               animatedTexts: [
                 TypewriterAnimatedText(
@@ -70,5 +69,4 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
-
 }

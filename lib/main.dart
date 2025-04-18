@@ -6,12 +6,12 @@ import 'package:iterasi1/pages/splash_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
+import 'package:iterasi1/resource/theme.dart';
 import 'package:iterasi1/utilities/app_env.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

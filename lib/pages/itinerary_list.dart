@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 // import 'package:iterasi1/navigation/side_navbar.dart';
 import 'package:flutter/services.dart';
@@ -5,8 +7,9 @@ import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/pages/datepicker/select_date.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
 import 'package:iterasi1/utilities/date_time_formatter.dart';
+import 'package:iterasi1/widget/itinerary_card.dart';
 import 'package:provider/provider.dart';
 
 import '../model/itinerary.dart';
@@ -23,6 +26,7 @@ class ItineraryList extends StatefulWidget {
 
 class _ItineraryListState extends State<ItineraryList> {
   late ScaffoldMessengerState snackbarHandler;
+  String searchKeyword = '';
 
   TextEditingController searchController = TextEditingController();
 
@@ -32,6 +36,8 @@ class _ItineraryListState extends State<ItineraryList> {
 
   @override
   Widget build(BuildContext context) {
+    // String searchKeyword = '';
+    // TextEditingController searchController = TextEditingController(text: '');
     snackbarHandler = ScaffoldMessenger.of(context);
 
     dbProvider = Provider.of(context, listen: true);
@@ -58,165 +64,41 @@ class _ItineraryListState extends State<ItineraryList> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: const Color(0xFFFAF8F1),
+        backgroundColor: CustomColor.whiteColor,
         // drawer: NavDrawer(),
         appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xFFFAF8F1),
+          centerTitle: false,
+          // automaticallyImplyLeading: false,
+          backgroundColor: CustomColor.primary,
           elevation: 0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                'Trip Planner',
+                style: TextStyle(
+                  fontFamily: 'poppins_bold',
+                  color: CustomColor.whiteColor,
+                  fontWeight: bold,
+                  fontSize: 20,
+                ),
+              ),
               const SizedBox(
-                height: 50,
-                width: 50,
+                height: 3,
               ),
-              // SizedBox(
-              //   height: 50,
-              //   width: 50,
-              //   child: Card(
-              //     shape: RoundedRectangleBorder(
-              //         borderRadius: BorderRadius.circular(10)),
-              //     color: Colors.white,
-              //     child: IconButton(
-              //       icon: const Image(
-              //         color: Color(0xFFC58940),
-              //         image: AssetImage(
-              //           'assets/images/gallery-favorite.png',
-              //         ),
-              //       ),
-              //       onPressed: () {
-              //         Navigator.push(
-              //           context,
-              //           MaterialPageRoute(
-              //               builder: (context) => const FotoPage()),
-              //         );
-              //       },
-              //     ),
-              //   ),
-              // ),
               Container(
-                margin: const EdgeInsets.only(
-                  top: 5,
-                  bottom: 10,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 4,
+                  horizontal: 10,
                 ),
-                child: const Text(
-                  "Trip Planner",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'poppins_bold',
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFC58940),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                width: 50,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: Colors.white,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.search,
-                      color: CustomColor.buttonColor,
-                    ),
-                    onPressed: () {
-                      showModalBottomSheet(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20),
-                                  topRight: Radius.circular(20))),
-                          context: context,
-                          isScrollControlled: true,
-                          builder: (BuildContext context) {
-                            return SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              child: Container(
-                                color: const Color(0xFFF1F2F6),
-                                width: double.infinity,
-                                height: 450,
-                                child: IntrinsicHeight(
-                                  child: Container(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(7, 10, 7, 10),
-                                    child: Column(children: [
-                                      Container(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            10, 15, 10, 15),
-                                        margin: const EdgeInsets.fromLTRB(
-                                            10, 15, 10, 15),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              flex: 5,
-                                              child: Theme(
-                                                data: Theme.of(context)
-                                                    .copyWith(
-                                                        primaryColor:
-                                                            Colors.blue),
-                                                child: TextField(
-                                                  controller: searchController,
-                                                  onChanged: (value) {
-                                                    dbProvider.refreshData(
-                                                        filterItineraryName:
-                                                            searchController
-                                                                .text);
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    // fillColor: Colors.white38,
-                                                    filled: true,
-                                                    hintText: "Search",
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                height: 50,
-                                                width: 30,
-                                                padding:
-                                                    const EdgeInsets.all(5.0),
-                                                decoration: const BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.white,
-                                                ),
-                                                child: IconButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    icon: const Image(
-                                                      image: AssetImage(
-                                                          'assets/images/Search_Button.png'),
-                                                    )),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ]),
-                                  ),
-                                ),
-                              ),
-                            );
-                          });
-                    },
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
+                color: CustomColor.whiteColor,
+                child: Text(
+                  'TRIP SERU, PLANNING GAMPANG',
+                  style: primaryTextStyle.copyWith(
+                    color: CustomColor.primary,
+                    fontWeight: semibold,
+                    fontSize: 10,
                   ),
                 ),
               ),
@@ -225,10 +107,54 @@ class _ItineraryListState extends State<ItineraryList> {
         ),
         body: Container(
           margin: const EdgeInsets.only(bottom: 20),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 7),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                color: CustomColor.primaryColor500,
+                child: TextFormField(
+                  controller: searchController,
+                  // selectionHeightStyle: BoxHeightStyle.tight,
+                  style: primaryTextStyle.copyWith(),
+                  cursorColor: CustomColor.primaryColor500,
+                  onChanged: (value) {
+                    log('message ${searchController.text}');
+                  },
+                  decoration: InputDecoration(
+                    fillColor: CustomColor.whiteColor,
+                    filled: true,
+                    contentPadding: const EdgeInsets.symmetric(),
+                    hintText: 'Cari Trip Anda',
+                    hintStyle: primaryTextStyle.copyWith(
+                      color: CustomColor.subtitleTextColor,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(4.0),
+                      ),
+                      borderSide: BorderSide(
+                        color: CustomColor.disabledColor,
+                      ),
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(4.0),
+                      ),
+                      borderSide: BorderSide(
+                        color: CustomColor.primary,
+                      ),
+                    ),
+                    prefixIconConstraints: const BoxConstraints(
+                      maxHeight: 22,
+                    ),
+                    prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 12.0, right: 8),
+                        child: Icon(Icons.search)),
+                  ),
+                ),
+              ),
               Expanded(
                 child: ListView(
                   physics: const BouncingScrollPhysics(),
@@ -251,23 +177,32 @@ class _ItineraryListState extends State<ItineraryList> {
                         } else if (snapshot.hasData) {
                           // Jika data sudah tersedia, tampilkan daftar itineraries
                           final itineraries = snapshot.data!;
+
                           return Column(
                             children: [
-                              ListView.builder(
+                              ListView(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 scrollDirection: Axis.vertical,
                                 physics: const BouncingScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: itineraries.length,
-                                itemBuilder: (context, index) {
-                                  final item = itineraries[index];
-                                  return Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 16.0),
-                                    height: 100,
-                                    child: kartuItinerary(item, dbProvider,
-                                        context), // Anda dapat menaruh KartuItinerary di sini
-                                  );
-                                },
+                                children: [
+                                  ...itineraries.map(
+                                    (e) {
+                                      return ItineraryCard(
+                                        snackbarHandler: snackbarHandler,
+                                        itinerary: e,
+                                        dbProvider: dbProvider,
+                                      );
+                                    },
+                                  ).where(
+                                    (item) => item.itinerary.title
+                                        .toLowerCase()
+                                        .contains(
+                                          searchController.text.toLowerCase(),
+                                        ),
+                                  )
+                                ],
                               )
                             ],
                           );
@@ -287,105 +222,12 @@ class _ItineraryListState extends State<ItineraryList> {
     );
   }
 
-  Widget kartuItinerary(
-      Itinerary itinerary, DatabaseProvider dbProvider, BuildContext context) {
-    return InkWell(
-      onTap: () {
-        final itineraryProvider =
-            Provider.of<ItineraryProvider>(context, listen: false);
-        itineraryProvider.initItinerary(itinerary);
-
-        snackbarHandler.removeCurrentSnackBar();
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return const AddDays();
-        }));
-      },
-      child: Card(
-        elevation: 5,
-        color: const Color(0xFFC58940),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
-        child: Container(
-          padding: const EdgeInsets.only(
-            bottom: 12,
-          ),
-          height: 0,
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: InkWell(
-                    onTap: () {
-                      snackbarHandler.removeCurrentSnackBar();
-                      final itineraryCopy = itinerary.copy();
-                      dbProvider
-                          .deleteItinerary(itinerary: itinerary)
-                          .whenComplete(
-                        () {
-                          snackbarHandler.showSnackBar(
-                            SnackBar(
-                              content: const Text("Item dihapus!"),
-                              action: SnackBarAction(
-                                label: "Undo",
-                                onPressed: () {
-                                  dbProvider.insertItinerary(
-                                      itinerary: itineraryCopy);
-                                  snackbarHandler.removeCurrentSnackBar();
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Icon(
-                      Icons.close,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    itinerary.title,
-                    style: const TextStyle(
-                        fontFamily: 'poppins_bold',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                        color: Colors.white),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  "Mulai : ${itinerary.firstDate}",
-                  style: const TextStyle(
-                      color: CustomColor.surface,
-                      fontFamily: 'Montserrat',
-                      fontSize: 12),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Future<void> getItineraryTitle(BuildContext context) async {
-    final itineraryTitle =
-        await showTextDialog(context, title: "Judul Itinerary Trip", value: "");
+    final itineraryTitle = await showTextDialog(
+      context,
+      title: "JUDUL ITINERARY",
+      value: "",
+    );
 
     if (itineraryTitle != null && context.mounted) {
       if (itineraryTitle.isNotEmpty) {

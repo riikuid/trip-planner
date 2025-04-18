@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iterasi1/model/itinerary.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
 import 'package:printing/printing.dart';
 
 import 'make_pdf.dart';
@@ -10,8 +10,7 @@ class PdfPreviewPage extends StatelessWidget {
   const PdfPreviewPage({Key? key, required this.itinerary}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) =>
-      Scaffold(
+  Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColor.primary,
           title: const Text('Tinjau PDF'),
@@ -19,5 +18,5 @@ class PdfPreviewPage extends StatelessWidget {
         body: PdfPreview(
           build: (context) => makePdf(itinerary),
         ),
-    );
+      );
 }

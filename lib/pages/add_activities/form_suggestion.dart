@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iterasi1/model/itinerary.dart';
 import 'package:iterasi1/pages/add_activities/suggestion_page.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
-import 'package:iterasi1/resource/custom_colors.dart';
+import 'package:iterasi1/resource/theme.dart';
 import 'package:provider/provider.dart';
 
 class FormSuggestion extends StatefulWidget {

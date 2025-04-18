@@ -25,7 +25,6 @@ export 'package:iterasi1/pages/pdf/preview_pdf_page.dart';
 export 'package:iterasi1/pages/splash_screen.dart';
 export 'package:iterasi1/provider/database_provider.dart';
 export 'package:iterasi1/provider/itinerary_provider.dart';
-export 'package:iterasi1/resource/custom_colors.dart';
 export 'package:iterasi1/service/itinerary_service.dart';
 export 'package:iterasi1/utilities/app_env.dart';
 export 'package:iterasi1/utilities/date_time_formatter.dart';
