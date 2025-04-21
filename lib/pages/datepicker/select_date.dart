@@ -35,6 +35,24 @@ class _SelectDateState extends State<SelectDate> {
     selectedDates = widget.initialDates;
   }
 
+  onSimpanDate() {
+    if (selectedDates.isNotEmpty) {
+      itineraryProvider.initializeDays(selectedDates);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AddDays(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Pilih Tanggal setelah Hari Ini!"),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     itineraryProvider = Provider.of(context, listen: true);
@@ -164,9 +182,9 @@ class _SelectDateState extends State<SelectDate> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (widget.isNewItinerary)
-                        InkWell(
-                          onTap: () {
+                      InkWell(
+                        onTap: () {
+                          if (widget.isNewItinerary) {
                             if (selectedDates.isNotEmpty) {
                               if (selectedDates.length <= 3) {
                                 Navigator.push(
@@ -194,45 +212,8 @@ class _SelectDateState extends State<SelectDate> {
                                 ),
                               );
                             }
-                          },
-                          child: Container(
-                            height: 50,
-                            // width: 270,
-                            decoration: BoxDecoration(
-                              color: CustomColor.primaryColor500,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(100.0),
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Rekomendasi Itinerary',
-                              style: primaryTextStyle.copyWith(
-                                fontWeight: semibold,
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 10),
-                      InkWell(
-                        onTap: () {
-                          if (selectedDates.isNotEmpty) {
-                            itineraryProvider.initializeDays(selectedDates);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const AddDays(),
-                              ),
-                            );
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text("Pilih Tanggal setelah Hari Ini!"),
-                              ),
-                            );
+                            onSimpanDate();
                           }
                         },
                         child: Container(
@@ -246,7 +227,9 @@ class _SelectDateState extends State<SelectDate> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            widget.isNewItinerary ? 'Self Planning' : 'Simpan',
+                            widget.isNewItinerary
+                                ? 'Rekomendasi Itinerary By AI'
+                                : 'Simpan',
                             style: primaryTextStyle.copyWith(
                               fontWeight: semibold,
                               fontSize: 16,
@@ -255,6 +238,34 @@ class _SelectDateState extends State<SelectDate> {
                           ),
                         ),
                       ),
+                      if (widget.isNewItinerary) const SizedBox(height: 10),
+                      if (widget.isNewItinerary)
+                        InkWell(
+                          onTap: onSimpanDate,
+                          child: Container(
+                            height: 20,
+                            // width: 270,
+                            margin: const EdgeInsets.only(bottom: 5, top: 2),
+                            decoration: BoxDecoration(
+                              color: CustomColor.transparentColor,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(100.0),
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Buat Rencana Sendiri',
+                              style: primaryTextStyle.copyWith(
+                                decoration: widget.isNewItinerary
+                                    ? TextDecoration.underline
+                                    : null,
+                                fontWeight: regular,
+                                fontSize: 12,
+                                color: CustomColor.subtitleTextColor,
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
