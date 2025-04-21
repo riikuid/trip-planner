@@ -6,6 +6,7 @@ import 'package:iterasi1/pages/activity_photo_page.dart';
 import 'package:iterasi1/pages/add_activities/add_activities.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/resource/theme.dart';
+import 'package:iterasi1/utilities/app_helper.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
 
@@ -105,7 +106,7 @@ class ActivityCard extends StatelessWidget {
             },
             child: Container(
               decoration: BoxDecoration(
-                color: CustomColor.primary,
+                color: CustomColor.primaryColor50,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Column(
@@ -120,114 +121,120 @@ class ActivityCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
+                            Icon(
+                              const IconData(
+                                0xe055,
+                                fontFamily: 'MaterialIcons',
+                              ),
+                              color: CustomColor.subtitleTextColor,
+                              size: 15,
+                            ),
+                            const SizedBox(
+                              width: 9,
+                            ),
                             Expanded(
                               child: Text(
-                                data.activityName,
+                                data.lokasi,
                                 textAlign: TextAlign.left,
-                                style: const TextStyle(
-                                  fontFamily: 'poppins_bold',
-                                  fontSize: 24,
-                                  color: Colors.white,
+                                style: primaryTextStyle.copyWith(
+                                  fontSize: 14,
+                                  fontWeight: semibold,
+                                  color: CustomColor.subtitleTextColor,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            // Stack(
-                            //   children: [
-                            //     Padding(
-                            //       padding: const EdgeInsets.all(12.0),
-                            //       child: Align(
-                            //         alignment: Alignment.topRight,
-                            //         child: InkWell(
-                            //           onTap: () {
-                            //             print('activity:${data.startDateTime}');
-                            //             print('activity:${data.startActivityTime}');
-                            //             requestGalleryPermission(
-                            //                 data); // Kirim activity sebagai argument
-                            //           },
-                            //           child: Transform.scale(
-                            //             scale: 1.8, // ukuran gambar
-                            //             child: const Image(
-                            //               width: 30,
-                            //               height: 30,
-                            //               color: CustomColor.surface,
-                            //               image: AssetImage(
-                            //                 'assets/images/gallery-favorite.png',
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
                           ],
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  IconData(0xe055, fontFamily: 'MaterialIcons'),
-                                  color: Colors.white,
-                                  size: 15,
-                                ),
-                                const SizedBox(
-                                  width: 9,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    data.lokasi,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      fontFamily: 'poppins_bold',
-                                      fontSize: 15,
-                                      color: Colors.white,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.access_time_outlined,
-                                  color: Colors.white,
-                                  size: 15,
-                                ),
-                                const SizedBox(
-                                  width: 9,
-                                ),
-                                Text(
-                                  "${data.startActivityTime} - ${data.endActivityTime}",
-                                  style: const TextStyle(
-                                    fontFamily: 'poppins_bold',
-                                    fontSize: 15,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
+                        const SizedBox(
+                          height: 4,
                         ),
                         Text(
-                          data.keterangan,
-                          style: const TextStyle(
-                            fontFamily: 'poppins_regular',
-                            fontSize: 12,
-                            color: Colors.white,
+                          data.activityName,
+                          textAlign: TextAlign.left,
+                          style: primaryTextStyle.copyWith(
+                            fontSize: 20,
+                            fontWeight: semibold,
+                            color: CustomColor.primaryColor900,
                           ),
-                          overflow: TextOverflow.ellipsis,
                           maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'START',
+                                  style: primaryTextStyle.copyWith(
+                                    fontWeight: regular,
+                                    fontSize: 12,
+                                    color: CustomColor.subtitleTextColor,
+                                  ),
+                                ),
+                                Text(
+                                  data.startActivityTime,
+                                  style: primaryTextStyle.copyWith(
+                                    fontWeight: regular,
+                                    fontSize: 16,
+                                    color: CustomColor.subtitleTextColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: CustomColor.primaryColor300,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(50.0),
+                                ),
+                              ),
+                              child: Text(
+                                '${AppHelper.calculateDurationInMinutes(data.startActivityTime, data.endActivityTime)} Mins',
+                                style: primaryTextStyle.copyWith(
+                                  fontWeight: semibold,
+                                  color: CustomColor.whiteColor,
+                                  fontSize: 10,
+                                ),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'END',
+                                  style: primaryTextStyle.copyWith(
+                                    fontWeight: regular,
+                                    fontSize: 12,
+                                    color: CustomColor.subtitleTextColor,
+                                  ),
+                                ),
+                                Text(
+                                  data.endActivityTime,
+                                  style: primaryTextStyle.copyWith(
+                                    fontWeight: regular,
+                                    fontSize: 16,
+                                    color: CustomColor.subtitleTextColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ],
                     ),

@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:iterasi1/resource/theme.dart';
 
-class SearchField extends StatefulWidget{
+class SearchField extends StatefulWidget {
   final String initialText;
   final Function(String) onSubmit;
   final Function(String) onValueChange;
 
-  SearchField({
-    required this.initialText ,
-    required this.onSubmit,
-    required this.onValueChange,
-    Key? key
-  }) : super(key: key);
+  SearchField(
+      {required this.initialText,
+      required this.onSubmit,
+      required this.onValueChange,
+      Key? key})
+      : super(key: key);
 
   @override
   State createState() => _SearchFieldState();
 }
 
-class _SearchFieldState extends State<SearchField>{
+class _SearchFieldState extends State<SearchField> {
   late TextEditingController controller;
 
   @override
@@ -28,7 +29,7 @@ class _SearchFieldState extends State<SearchField>{
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController(text : widget.initialText);
+    controller = TextEditingController(text: widget.initialText);
   }
 
   @override
@@ -38,30 +39,24 @@ class _SearchFieldState extends State<SearchField>{
       controller: controller,
       onChanged: widget.onValueChange,
       onSubmitted: widget.onSubmit,
-      style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.white
+      style: primaryTextStyle.copyWith(
+        fontWeight: semibold,
+        color: Colors.white,
       ),
       textAlign: TextAlign.center,
       decoration: InputDecoration(
-        suffixIcon : IconButton(
-            onPressed: (){
+        contentPadding: EdgeInsets.zero,
+        suffixIcon: IconButton(
+            onPressed: () {
               widget.onSubmit(controller.text);
             },
-            icon: const Icon(
-                Icons.close,
-              color: Colors.white
-            )
-        ),
+            icon: const Icon(Icons.close, color: Colors.white)),
         border: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white)
-        ),
+            borderSide: BorderSide(color: Colors.white)),
         focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.white)
-        ),
+            borderSide: BorderSide(color: Colors.white)),
         enabledBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white)
-        ),
+            borderSide: BorderSide(color: Colors.white)),
       ),
     );
   }

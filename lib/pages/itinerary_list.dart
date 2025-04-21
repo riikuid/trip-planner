@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-// import 'package:iterasi1/navigation/side_navbar.dart';
 import 'package:flutter/services.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/pages/datepicker/select_date.dart';
@@ -9,7 +8,9 @@ import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/resource/theme.dart';
 import 'package:iterasi1/utilities/date_time_formatter.dart';
+import 'package:iterasi1/widget/custom_buttom_sheet.dart';
 import 'package:iterasi1/widget/itinerary_card.dart';
+import 'package:iterasi1/widget/itinerary_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../model/itinerary.dart';
@@ -18,7 +19,7 @@ import '../widget/text_dialog.dart';
 class ItineraryList extends StatefulWidget {
   static const route = "/ItineraryListRoute";
 
-  ItineraryList({Key? key}) : super(key: key);
+  const ItineraryList({Key? key}) : super(key: key);
 
   @override
   State<ItineraryList> createState() => _ItineraryListState();
@@ -26,24 +27,30 @@ class ItineraryList extends StatefulWidget {
 
 class _ItineraryListState extends State<ItineraryList> {
   late ScaffoldMessengerState snackbarHandler;
-  String searchKeyword = '';
-
   TextEditingController searchController = TextEditingController();
-
-  final time = DateTime.now();
-
   late DatabaseProvider dbProvider;
 
   @override
+  void initState() {
+    super.initState();
+    dbProvider = Provider.of<DatabaseProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _refreshData() {
+    setState(() {
+      dbProvider.refreshData(filterItineraryName: searchController.text);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // String searchKeyword = '';
-    // TextEditingController searchController = TextEditingController(text: '');
     snackbarHandler = ScaffoldMessenger.of(context);
-
-    dbProvider = Provider.of(context, listen: true);
-
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-    // String _prefixtext = "Search";
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -51,7 +58,6 @@ class _ItineraryListState extends State<ItineraryList> {
       ),
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-        key: _scaffoldKey,
         floatingActionButton: FloatingActionButton(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
@@ -65,13 +71,10 @@ class _ItineraryListState extends State<ItineraryList> {
           ),
         ),
         backgroundColor: CustomColor.whiteColor,
-        // drawer: NavDrawer(),
         appBar: AppBar(
           centerTitle: false,
-          // automaticallyImplyLeading: false,
           backgroundColor: CustomColor.primary,
           elevation: 0,
-
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -80,24 +83,20 @@ class _ItineraryListState extends State<ItineraryList> {
                 style: TextStyle(
                   fontFamily: 'poppins_bold',
                   color: CustomColor.whiteColor,
-                  fontWeight: bold,
+                  fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
-              const SizedBox(
-                height: 3,
-              ),
+              const SizedBox(height: 3),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 4,
-                  horizontal: 10,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                 color: CustomColor.whiteColor,
-                child: Text(
+                child: const Text(
                   'TRIP SERU, PLANNING GAMPANG',
-                  style: primaryTextStyle.copyWith(
+                  style: TextStyle(
+                    fontFamily: 'poppins_bold',
                     color: CustomColor.primary,
-                    fontWeight: semibold,
                     fontSize: 10,
                   ),
                 ),
@@ -108,7 +107,6 @@ class _ItineraryListState extends State<ItineraryList> {
         body: Container(
           margin: const EdgeInsets.only(bottom: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding:
@@ -116,103 +114,97 @@ class _ItineraryListState extends State<ItineraryList> {
                 color: CustomColor.primaryColor500,
                 child: TextFormField(
                   controller: searchController,
-                  // selectionHeightStyle: BoxHeightStyle.tight,
-                  style: primaryTextStyle.copyWith(),
+                  style: primaryTextStyle.copyWith(
+                    fontSize: 14,
+                  ),
                   cursorColor: CustomColor.primaryColor500,
                   onChanged: (value) {
-                    log('message ${searchController.text}');
+                    _refreshData(); // Refresh dengan filter pencarian
+                    log('Search input: $value');
                   },
                   decoration: InputDecoration(
                     fillColor: CustomColor.whiteColor,
                     filled: true,
-                    contentPadding: const EdgeInsets.symmetric(),
                     hintText: 'Cari Trip Anda',
                     hintStyle: primaryTextStyle.copyWith(
                       color: CustomColor.subtitleTextColor,
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(4.0),
-                      ),
-                      borderSide: BorderSide(
-                        color: CustomColor.disabledColor,
-                      ),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(color: CustomColor.disabledColor),
                     ),
                     focusedBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(4.0),
-                      ),
-                      borderSide: BorderSide(
-                        color: CustomColor.primary,
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                      borderSide: BorderSide(color: CustomColor.primary),
                     ),
-                    prefixIconConstraints: const BoxConstraints(
-                      maxHeight: 22,
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.only(left: 12.0, right: 8),
+                      child: Icon(Icons.search),
                     ),
-                    prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 12.0, right: 8),
-                        child: Icon(Icons.search)),
                   ),
                 ),
               ),
               Expanded(
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  children: [
-                    FutureBuilder<List<Itinerary>>(
-                      future: dbProvider.itineraryDatas,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          // Jika masih dalam proses memuat data, tampilkan indikator kemajuan
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          // Jika terjadi kesalahan, tampilkan pesan kesalahan
-                          return Center(
-                            child: Text('Error: ${snapshot.error}'),
-                          );
-                        } else if (snapshot.hasData) {
-                          // Jika data sudah tersedia, tampilkan daftar itineraries
-                          final itineraries = snapshot.data!;
+                child: FutureBuilder<List<Itinerary>>(
+                  future: dbProvider.itineraryDatas,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      final itineraries = snapshot.data!;
+                      final filteredItineraries = itineraries.where((item) {
+                        return item.title
+                            .toLowerCase()
+                            .contains(searchController.text.toLowerCase());
+                      }).toList();
 
-                          return Column(
-                            children: [
-                              ListView(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                scrollDirection: Axis.vertical,
-                                physics: const BouncingScrollPhysics(),
-                                shrinkWrap: true,
-                                children: [
-                                  ...itineraries.map(
-                                    (e) {
-                                      return ItineraryCard(
-                                        snackbarHandler: snackbarHandler,
-                                        itinerary: e,
-                                        dbProvider: dbProvider,
-                                      );
-                                    },
-                                  ).where(
-                                    (item) => item.itinerary.title
-                                        .toLowerCase()
-                                        .contains(
-                                          searchController.text.toLowerCase(),
-                                        ),
-                                  )
-                                ],
-                              )
-                            ],
+                      // return GridView.builder(
+                      //   physics: const BouncingScrollPhysics(),
+                      //   padding: const EdgeInsets.all(12),
+                      //   gridDelegate:
+                      //       const SliverGridDelegateWithFixedCrossAxisCount(
+                      //     crossAxisCount: 2, // 2 kolom
+                      //     childAspectRatio: 1, // Rasio aspek tile
+                      //     crossAxisSpacing: 14,
+                      //     mainAxisSpacing: 14,
+                      //   ),
+                      //   itemCount: filteredItineraries.length,
+                      //   itemBuilder: (context, index) {
+                      //     final itinerary = filteredItineraries[index];
+                      //     return ItineraryTile(
+                      //       snackbarHandler: snackbarHandler,
+                      //       itinerary: itinerary,
+                      //       dbProvider: dbProvider,
+                      //       onDelete: _refreshData,
+                      //     );
+                      //   },
+                      // );
+
+                      return ListView.separated(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 12),
+                        itemCount: itineraries.length,
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 20,
+                        ),
+                        itemBuilder: (context, index) {
+                          final itinerary = itineraries[index];
+                          return ItineraryCard(
+                            snackbarHandler: snackbarHandler,
+                            itinerary: itinerary,
+                            dbProvider: dbProvider,
+                            onDelete:
+                                _refreshData, // Panggil refresh setelah hapus
                           );
-                        } else {
-                          // Jika tidak ada data, tampilkan widget kosong
-                          return Container(); // atau bisa juga return null
-                        }
-                      },
-                    ),
-                  ],
+                        },
+                      );
+                    }
+                    return const Center(child: Text('No itineraries found'));
+                  },
                 ),
               ),
             ],
@@ -223,24 +215,36 @@ class _ItineraryListState extends State<ItineraryList> {
   }
 
   Future<void> getItineraryTitle(BuildContext context) async {
-    final itineraryTitle = await showTextDialog(
-      context,
-      title: "JUDUL ITINERARY",
-      value: "",
+    // final itineraryTitle = await showTextDialog(
+    //   context,
+    //   title: "JUDUL ITINERARY",
+    //   value: "",
+    // );
+    final result = await showModalBottomSheet<String>(
+      backgroundColor: CustomColor.whiteColor,
+      shape: const ContinuousRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12.0),
+        ),
+      ),
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return const CustomBottomSheet();
+      },
     );
 
-    if (itineraryTitle != null && context.mounted) {
-      if (itineraryTitle.isNotEmpty) {
+    if (result != null && context.mounted) {
+      if (result.isNotEmpty) {
         final today = DateTime.now();
 
         Provider.of<ItineraryProvider>(context, listen: false).initItinerary(
             Itinerary(
-                title: itineraryTitle,
-                dateModified: DateTimeFormatter.toDMY(today)));
+                title: result, dateModified: DateTimeFormatter.toDMY(today)));
 
         snackbarHandler.removeCurrentSnackBar();
 
-        Navigator.of(context).push(
+        await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) {
               return SelectDate(
@@ -249,6 +253,9 @@ class _ItineraryListState extends State<ItineraryList> {
             },
           ),
         );
+        if (context.mounted) {
+          _refreshData(); // Refresh setelah balik dari SelectDate
+        }
       }
     }
   }

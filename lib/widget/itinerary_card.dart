@@ -4,17 +4,22 @@ import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/resource/theme.dart';
+import 'package:iterasi1/utilities/app_helper.dart';
 import 'package:provider/provider.dart';
 
 class ItineraryCard extends StatelessWidget {
   final DatabaseProvider dbProvider;
   final ScaffoldMessengerState snackbarHandler;
   final Itinerary itinerary;
-  const ItineraryCard(
-      {super.key,
-      required this.dbProvider,
-      required this.snackbarHandler,
-      required this.itinerary});
+  final VoidCallback? onDelete; // Callback untuk refresh
+
+  const ItineraryCard({
+    super.key,
+    required this.dbProvider,
+    required this.snackbarHandler,
+    required this.itinerary,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,147 +46,160 @@ class ItineraryCard extends StatelessWidget {
           borderRadius: const BorderRadius.all(
             Radius.circular(12.0),
           ),
-          boxShadow: [
-            const BoxShadow(
-              color: Color(0x19000000),
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-          color: CustomColor.greyBackgroundColor,
-          // border: Border.all(
-          //   width: 0.5,
-          //   color: CustomColor.primary,
-          // ),
+          color: CustomColor.primaryColor50,
         ),
-        // height: 0,
         child: Stack(
+          alignment: Alignment.topRight,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () {
-                  snackbarHandler.removeCurrentSnackBar();
-                  final itineraryCopy = itinerary.copy();
-                  dbProvider.deleteItinerary(itinerary: itinerary).whenComplete(
-                    () {
-                      snackbarHandler.showSnackBar(
-                        SnackBar(
-                          content: const Text("Item dihapus!"),
-                          action: SnackBarAction(
-                            label: "Undo",
-                            onPressed: () {
-                              dbProvider.insertItinerary(
-                                  itinerary: itineraryCopy);
-                              snackbarHandler.removeCurrentSnackBar();
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Icon(
-                  Icons.cancel,
-                  size: 18,
-                  color: CustomColor.primaryColor500,
-                  weight: 50,
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${itinerary.days.length} Days Trip',
-                      style: primaryTextStyle.copyWith(
-                        fontWeight: semibold,
-                        fontSize: 10,
-                        color: CustomColor.subtitleTextColor,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      itinerary.title,
-                      style: primaryTextStyle.copyWith(
-                        fontWeight: semibold,
-                        color: CustomColor.blackColor,
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
+                            horizontal: 16,
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: CustomColor.primaryColor200,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12.0),
+                            color: CustomColor.primaryColor300,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(50.0),
                             ),
                           ),
                           child: Text(
-                            itinerary.days.first.date,
+                            itinerary.days.length > 1
+                                ? '${itinerary.days.length} Days'
+                                : '${itinerary.days.length} Day',
                             style: primaryTextStyle.copyWith(
                               fontWeight: semibold,
-                              color: CustomColor.subtitleTextColor,
-                              fontSize: 8,
+                              color: CustomColor.whiteColor,
+                              fontSize: 12,
                             ),
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 5,
-                          ),
-                          child: Text(
-                            '-',
-                            style: primaryTextStyle.copyWith(
-                              fontSize: 10,
-                            ),
-                          ),
+                        const SizedBox(
+                          height: 8,
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
+                        Text(
+                          itinerary.title,
+                          style: primaryTextStyle.copyWith(
+                            fontWeight: semibold,
+                            fontSize: 24,
+                            color: CustomColor.primaryColor900,
                           ),
-                          decoration: BoxDecoration(
-                            color: CustomColor.primaryColor200,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12.0),
-                            ),
-                          ),
-                          child: Text(
-                            itinerary.days.last.date,
-                            style: primaryTextStyle.copyWith(
-                              fontWeight: semibold,
-                              color: CustomColor.subtitleTextColor,
-                              fontSize: 8,
-                            ),
-                            textAlign: TextAlign.center,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const VerticalDivider(
+                    width: 50,
+                    thickness: 1,
+                    indent: 10,
+                    endIndent: 10,
+                    color: Colors.grey,
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'START',
+                              style: primaryTextStyle.copyWith(
+                                fontWeight: regular,
+                                fontSize: 12,
+                                color: CustomColor.subtitleTextColor,
+                              ),
+                            ),
+                            Text(
+                              AppHelper.formatDate(itinerary.days.first.date),
+                              style: primaryTextStyle.copyWith(
+                                fontWeight: regular,
+                                fontSize: 16,
+                                color: CustomColor.subtitleTextColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (itinerary.days.length > 1)
+                          const SizedBox(
+                            height: 20,
+                          ),
+                        if (itinerary.days.length > 1)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'END',
+                                style: primaryTextStyle.copyWith(
+                                  fontWeight: regular,
+                                  fontSize: 12,
+                                  color: CustomColor.subtitleTextColor,
+                                ),
+                              ),
+                              Text(
+                                AppHelper.formatDate(itinerary.days.last.date),
+                                style: primaryTextStyle.copyWith(
+                                  fontWeight: regular,
+                                  fontSize: 16,
+                                  color: CustomColor.subtitleTextColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                snackbarHandler.removeCurrentSnackBar();
+                final itineraryCopy = itinerary.copy();
+                dbProvider.deleteItinerary(itinerary: itinerary).whenComplete(
+                  () {
+                    onDelete?.call(); // Refresh daftar setelah hapus
+                    snackbarHandler.showSnackBar(
+                      SnackBar(
+                        content: const Text("Item dihapus!"),
+                        action: SnackBarAction(
+                          label: "Undo",
+                          onPressed: () {
+                            dbProvider.insertItinerary(
+                                itinerary: itineraryCopy);
+                            onDelete?.call(); // Refresh setelah undo
+                            snackbarHandler.removeCurrentSnackBar();
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Icon(
+                Icons.cancel,
+                size: 18,
+                color: CustomColor.primaryColor500,
+                weight: 50,
+              ),
             ),
           ],
         ),
