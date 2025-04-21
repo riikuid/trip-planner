@@ -42,47 +42,52 @@ class _SelectDateState extends State<SelectDate> {
 
     return LoaderOverlay(
       child: Scaffold(
-        backgroundColor: const Color(0xFFE5BA73),
+        // extendBodyBehindAppBar: true,
+        backgroundColor: CustomColor.whiteColor,
         appBar: AppBar(
-          title: const Text(
+          // toolbarHeight: 118,
+          backgroundColor: CustomColor.primaryColor500,
+          title: Text(
             'Pilih Tanggal',
-            style: TextStyle(
-              fontSize: 30,
-              fontFamily: 'poppins_bold',
+            style: primaryTextStyle.copyWith(
+              fontWeight: semibold,
+              fontSize: 20,
+              // fontFamily: 'poppins_bold',
+              color: CustomColor.whiteColor,
             ),
             // itineraryProvider.itinerary.title,
           ),
           centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+          leading: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: BackButton(
+              style: IconButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                foregroundColor: CustomColor.whiteColor,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
           ),
-          backgroundColor: const Color(0xFFE5BA73),
           elevation: 0,
         ),
         body: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                child: Container(
-                  color: CustomColor.surface,
-                  padding: const EdgeInsets.all(15.0),
+            Column(
+              children: [
+                Container(
+                  color: CustomColor.whiteColor,
+                  // padding: const EdgeInsets.only(top: 140),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Container(
                         padding: const EdgeInsets.all(15.0),
                         child: SfDateRangePicker(
-                          selectionColor: CustomColor.dateBackground,
-                          backgroundColor: CustomColor.surface,
-                          todayHighlightColor: CustomColor.borderColor,
+                          selectionColor: CustomColor.primaryColor500,
+                          backgroundColor: CustomColor.whiteColor,
+                          todayHighlightColor: CustomColor.subtitleTextColor,
                           selectionTextStyle: const TextStyle(
                             color: Colors.black,
                           ),
@@ -111,13 +116,13 @@ class _SelectDateState extends State<SelectDate> {
                               );
                             }
                           },
-                          headerStyle: const DateRangePickerHeaderStyle(
-                            backgroundColor: CustomColor.surface,
+                          headerStyle: DateRangePickerHeaderStyle(
+                            backgroundColor: CustomColor.whiteColor,
                             textAlign: TextAlign.center,
-                            textStyle: TextStyle(
+                            textStyle: primaryTextStyle.copyWith(
                               fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              fontFamily: 'poppins_bold',
+                              fontSize: 16,
+                              // fontFamily: 'poppins_bold',
                               color: Colors.black,
                             ),
                           ),
@@ -126,8 +131,9 @@ class _SelectDateState extends State<SelectDate> {
                     ],
                   ),
                 ),
-              ),
+              ],
             ),
+
             // onSelectionChanged:
             //     (DateRangePickerSelectionChangedArgs? args) {
             //   if (args?.value is List<DateTime>) {
@@ -138,70 +144,29 @@ class _SelectDateState extends State<SelectDate> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                // padding: EdgeInsets.fromLTRB(7, 15, 7, 30),
-                padding: const EdgeInsets.all(30),
+                width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40)),
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12)),
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.grey.withOpacity(0.8),
-                        spreadRadius: 4,
-                        blurRadius: 5,
-                        offset: const Offset(0, 2))
+                      color: Color(0x19000000),
+                      blurRadius: 24,
+                      offset: Offset(0, 0),
+                    ),
                   ],
                 ),
-                height: 200,
-                // color: Colors.grey,
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                width: double.infinity,
-                height: 260,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(48),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    if (widget.isNewItinerary)
-                      Expanded(
-                        child: FilledButton(
-                          style: const ButtonStyle(
-                            backgroundColor: WidgetStatePropertyAll(
-                              CustomColor.buttonColor,
-                            ),
-                            padding: WidgetStatePropertyAll(
-                              EdgeInsets.symmetric(vertical: 20),
-                            ),
-                            shape: WidgetStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                              ),
-                            ),
-                          ),
-                          child: const Text(
-                            'Rekomendasi Itinerary',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'poppins_bold',
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                          onPressed: () {
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: IntrinsicHeight(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (widget.isNewItinerary)
+                        InkWell(
+                          onTap: () {
                             if (selectedDates.isNotEmpty) {
                               if (selectedDates.length <= 3) {
                                 Navigator.push(
@@ -230,38 +195,29 @@ class _SelectDateState extends State<SelectDate> {
                               );
                             }
                           },
-                        ),
-                      ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: FilledButton(
-                        style: const ButtonStyle(
-                          backgroundColor: WidgetStatePropertyAll(
-                            CustomColor.buttonColor,
-                          ),
-                          padding: WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(vertical: 31),
-                          ),
-                          shape: WidgetStatePropertyAll(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(20),
+                          child: Container(
+                            height: 50,
+                            // width: 270,
+                            decoration: BoxDecoration(
+                              color: CustomColor.primaryColor500,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(100.0),
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Rekomendasi Itinerary',
+                              style: primaryTextStyle.copyWith(
+                                fontWeight: semibold,
+                                fontSize: 16,
+                                color: Colors.white,
                               ),
                             ),
                           ),
                         ),
-                        child: Text(
-                          widget.isNewItinerary
-                              ? 'Self Planning'
-                              : 'Selanjutnya',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: 'poppins_bold',
-                            fontSize: 16,
-                            color: Colors.white,
-                          ),
-                        ),
-                        onPressed: () {
+                      const SizedBox(height: 10),
+                      InkWell(
+                        onTap: () {
                           if (selectedDates.isNotEmpty) {
                             itineraryProvider.initializeDays(selectedDates);
                             Navigator.push(
@@ -279,9 +235,28 @@ class _SelectDateState extends State<SelectDate> {
                             );
                           }
                         },
+                        child: Container(
+                          height: 50,
+                          // width: 270,
+                          decoration: BoxDecoration(
+                            color: CustomColor.primaryColor500,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(100.0),
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            widget.isNewItinerary ? 'Self Planning' : 'Simpan',
+                            style: primaryTextStyle.copyWith(
+                              fontWeight: semibold,
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

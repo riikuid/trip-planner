@@ -46,23 +46,6 @@ class _AddDaysState extends State<AddDays> {
 
   late ScaffoldMessengerState snackbarHandler;
 
-  Future<void> openGoogleMaps(String placeName) async {
-    // Encode nama tempat untuk URL
-    String query = Uri.encodeComponent(placeName);
-    String googleMapsUrl =
-        "https://www.google.com/maps/search/?api=1&query=$query";
-
-    final Uri url = Uri.parse(googleMapsUrl);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(
-        url,
-        mode: LaunchMode.externalApplication,
-      );
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
 // Fungsi untuk meminta permission galeri dan navigasi jika izin diberikan
   Future<void> requestGalleryPermission(Activity activity) async {
     var result = await PhotoManager
@@ -198,157 +181,148 @@ class _AddDaysState extends State<AddDays> {
           ),
           body: Stack(
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(0),
-                  topRight: Radius.circular(0),
-                ),
-                child: Container(
-                  color: CustomColor.whiteColor,
-                  // padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        children: [
-                          SizedBox(
-                            height: 65,
-                            child: ListView.separated(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              scrollDirection: Axis.horizontal,
-                              physics: const BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return KartuTanggal(
-                                    index,
-                                    itineraryProvider
-                                        .itinerary.days[index].date);
-                              },
-                              itemCount:
-                                  itineraryProvider.itinerary.days.length,
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return const SizedBox(
-                                  // height: 24,
-                                  width: 40,
-                                );
-                              },
+              Container(
+                color: CustomColor.whiteColor,
+                // padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          child: ListView.separated(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return SelectDate(
-                                        isNewItinerary: false,
-                                        initialDates: itineraryProvider
-                                            .itinerary.days
-                                            .map((e) => e.getDatetime())
-                                            .toList(),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              child: Card(
-                                elevation: 4,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(80),
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(1.0),
-                                  child: Icon(Icons.add),
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      Divider(
-                        height: 0,
-                        color: CustomColor.subtitleTextColor,
-                        thickness: 0.5,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 65),
-                          child: FutureBuilder<List<Activity>>(
-                            future: itineraryProvider.getSortedActivity(
-                                itineraryProvider.itinerary
-                                    .days[selectedDayIndex].activities),
-                            builder: (context, snapshot) {
-                              final data = snapshot.data;
-                              if (data != null) {
-                                return ListView.separated(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 24, 20, 0),
-                                  scrollDirection: Axis.vertical,
-                                  physics: const BouncingScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    final currentActivity = data[index].copy();
-                                    print(
-                                        'activity card : ${data[index].startDateTime}');
-                                    // print(
-                                    //     'activity card : ${data[index].startActivityTime}');
-                                    // return buildActivityCard(
-                                    //   context,
-                                    //   data[index],
-                                    //   activityIndex: index,
-                                    //   dayIndex: selectedDayIndex,
-                                    //   onDismiss: () {
-                                    //     itineraryProvider.removeActivity(
-                                    //         activities: data,
-                                    //         removedHashCode:
-                                    //             data[index].hashCode);
-                                    //   },
-                                    //   onUndo: () {
-                                    //     itineraryProvider.insertNewActivity(
-                                    //         activities: data,
-                                    //         newActivity: currentActivity);
-                                    //   },
-                                    // );
-                                    return ActivityCard(
-                                      snackbarHandler: snackbarHandler,
-                                      data: data[index],
-                                      selectedDayIndex: selectedDayIndex,
-                                      activityIndex: index,
-                                      onUndo: () {
-                                        itineraryProvider.insertNewActivity(
-                                            activities: data,
-                                            newActivity: currentActivity);
-                                      },
-                                      onDismiss: () {
-                                        itineraryProvider.removeActivity(
-                                            activities: data,
-                                            removedHashCode:
-                                                data[index].hashCode);
-                                      },
-                                    );
-                                  },
-                                  separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return const SizedBox(
-                                      height: 24,
-                                    );
-                                  },
-                                  itemCount: data.length,
-                                );
-                              } else {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return KartuTanggal(index,
+                                  itineraryProvider.itinerary.days[index].date);
+                            },
+                            itemCount: itineraryProvider.itinerary.days.length,
+                            separatorBuilder:
+                                (BuildContext context, int index) {
+                              return const SizedBox(
+                                // height: 24,
+                                width: 40,
+                              );
                             },
                           ),
                         ),
-                      )
-                    ],
-                  ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return SelectDate(
+                                      isNewItinerary: false,
+                                      initialDates: itineraryProvider
+                                          .itinerary.days
+                                          .map((e) => e.getDatetime())
+                                          .toList(),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(80),
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(1.0),
+                                child: Icon(Icons.add),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Divider(
+                      height: 0,
+                      color: CustomColor.subtitleTextColor,
+                      thickness: 0.5,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 65),
+                        child: FutureBuilder<List<Activity>>(
+                          future: itineraryProvider.getSortedActivity(
+                              itineraryProvider
+                                  .itinerary.days[selectedDayIndex].activities),
+                          builder: (context, snapshot) {
+                            final data = snapshot.data;
+                            if (data != null) {
+                              return ListView.separated(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                                scrollDirection: Axis.vertical,
+                                physics: const BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  final currentActivity = data[index].copy();
+                                  print(
+                                      'activity card : ${data[index].startDateTime}');
+                                  // print(
+                                  //     'activity card : ${data[index].startActivityTime}');
+                                  // return buildActivityCard(
+                                  //   context,
+                                  //   data[index],
+                                  //   activityIndex: index,
+                                  //   dayIndex: selectedDayIndex,
+                                  //   onDismiss: () {
+                                  //     itineraryProvider.removeActivity(
+                                  //         activities: data,
+                                  //         removedHashCode:
+                                  //             data[index].hashCode);
+                                  //   },
+                                  //   onUndo: () {
+                                  //     itineraryProvider.insertNewActivity(
+                                  //         activities: data,
+                                  //         newActivity: currentActivity);
+                                  //   },
+                                  // );
+                                  return ActivityCard(
+                                    snackbarHandler: snackbarHandler,
+                                    data: data[index],
+                                    selectedDayIndex: selectedDayIndex,
+                                    activityIndex: index,
+                                    onUndo: () {
+                                      itineraryProvider.insertNewActivity(
+                                          activities: data,
+                                          newActivity: currentActivity);
+                                    },
+                                    onDismiss: () {
+                                      itineraryProvider.removeActivity(
+                                          activities: data,
+                                          removedHashCode:
+                                              data[index].hashCode);
+                                    },
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const SizedBox(
+                                    height: 24,
+                                  );
+                                },
+                                itemCount: data.length,
+                              );
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
               Align(
@@ -369,104 +343,97 @@ class _AddDaysState extends State<AddDays> {
                     ],
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  print(itineraryProvider.itinerary
-                                      .days[selectedDayIndex].activities);
-                                  return AddActivities(
-                                    onSubmit: (newActivity) {
-                                      itineraryProvider.insertNewActivity(
-                                          activities: itineraryProvider
-                                              .itinerary
-                                              .days[selectedDayIndex]
-                                              .activities,
-                                          newActivity: newActivity);
-                                      dev.log(
-                                          "${itineraryProvider.itinerary.days[selectedDayIndex].activities.length}");
-                                    },
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          child: Container(
-                            height: 60,
-                            width: 200,
-                            decoration: BoxDecoration(
-                              color: CustomColor.primaryColor500,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8.0),
-                              ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                print(itineraryProvider.itinerary
+                                    .days[selectedDayIndex].activities);
+                                return AddActivities(
+                                  onSubmit: (newActivity) {
+                                    itineraryProvider.insertNewActivity(
+                                        activities: itineraryProvider.itinerary
+                                            .days[selectedDayIndex].activities,
+                                        newActivity: newActivity);
+                                    dev.log(
+                                        "${itineraryProvider.itinerary.days[selectedDayIndex].activities.length}");
+                                  },
+                                );
+                              },
                             ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Tambah Aktivitas',
-                              style: primaryTextStyle.copyWith(
-                                fontWeight: semibold,
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
+                          );
+                        },
+                        child: Container(
+                          height: 50,
+                          width: 270,
+                          decoration: BoxDecoration(
+                            color: CustomColor.primaryColor500,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(100.0),
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Tambah Aktivitas',
+                            style: primaryTextStyle.copyWith(
+                              fontWeight: semibold,
+                              fontSize: 16,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      SizedBox(
-                        height: 60,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (builder) => PdfPreviewPage(
+                                  itinerary: itineraryProvider.itinerary),
                             ),
-                            backgroundColor: MaterialStatePropertyAll(
-                              CustomColor.primaryColor500,
+                          );
+                        },
+                        customBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: CustomColor.primaryColor500,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(100.0),
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (builder) => PdfPreviewPage(
-                                    itinerary: itineraryProvider.itinerary),
-                              ),
-                            );
-                          },
+                          alignment: Alignment.center,
                           child: const Icon(
                             Icons.print,
+                            size: 20,
                             color: CustomColor.surface,
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      SizedBox(
-                        height: 60,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            backgroundColor: MaterialStatePropertyAll(
-                              CustomColor.primaryColor500,
+                      InkWell(
+                        onTap: saveCurrentItinerary,
+                        customBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: CustomColor.primaryColor500,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(100.0),
                             ),
                           ),
-                          onPressed: saveCurrentItinerary,
+                          alignment: Alignment.center,
                           child: const Icon(
                             Icons.save,
+                            size: 20,
                             color: CustomColor.surface,
                           ),
                         ),
@@ -695,14 +662,14 @@ class _AddDaysState extends State<AddDays> {
                                   ),
                                 ),
                               ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  openGoogleMaps(activity.lokasi);
-                                },
-                                child: Text(
-                                  'Open on Maps',
-                                ),
-                              )
+                              // ElevatedButton(
+                              //   onPressed: () async {
+                              //     openGoogleMaps(activity.lokasi);
+                              //   },
+                              //   child: Text(
+                              //     'Open on Maps',
+                              //   ),
+                              // )
                             ],
                           ),
                         ),

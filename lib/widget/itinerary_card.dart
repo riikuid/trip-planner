@@ -121,7 +121,7 @@ class ItineraryCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'START',
+                              'MULAI',
                               style: primaryTextStyle.copyWith(
                                 fontWeight: regular,
                                 fontSize: 12,
@@ -147,7 +147,7 @@ class ItineraryCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'END',
+                                'SELESAI',
                                 style: primaryTextStyle.copyWith(
                                   fontWeight: regular,
                                   fontSize: 12,

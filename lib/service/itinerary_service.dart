@@ -25,6 +25,7 @@ class ItineraryService {
         - tanggal pada field date harus dalam format 'DD/MM/YYYY'
         - Untuk aktivitas di tempat wisata, sertakan `latitude` dan `longitude` (contoh: Kebun Binatang Surabaya 7.2962, 112.7366)
         - Untuk aktivitas seperti check-in hotel atau perjalanan, isi `latitude` dan `longitude` dengan `null`
+        - Untuk `lokasi` pada aktivitas wajib menggunakan alamat lengkap nama tempat tersebut dengan format (nama tempat, kota)
         - activities berisikan title, location, start_time ('HH:mm'), end_time ('HH:mm') dan description
         """;
 
