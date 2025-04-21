@@ -1,25 +1,29 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:iterasi1/model/itinerary.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/resource/theme.dart';
 import 'package:iterasi1/utilities/app_helper.dart';
-import 'package:provider/provider.dart';
 
 class ItineraryCard extends StatelessWidget {
   final DatabaseProvider dbProvider;
   final ScaffoldMessengerState snackbarHandler;
   final Itinerary itinerary;
   final VoidCallback? onDelete; // Callback untuk refresh
+  final BuildContext parentContext;
 
   const ItineraryCard({
-    super.key,
+    Key? key,
     required this.dbProvider,
     required this.snackbarHandler,
     required this.itinerary,
     this.onDelete,
-  });
+    required this.parentContext,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +32,8 @@ class ItineraryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       onTap: () {
+        FocusScope.of(parentContext)
+            .unfocus(); // Menghapus fokus dari TextField
         final itineraryProvider =
             Provider.of<ItineraryProvider>(context, listen: false);
         itineraryProvider.initItinerary(itinerary);

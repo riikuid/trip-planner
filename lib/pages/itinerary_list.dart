@@ -10,11 +10,9 @@ import 'package:iterasi1/resource/theme.dart';
 import 'package:iterasi1/utilities/date_time_formatter.dart';
 import 'package:iterasi1/widget/custom_buttom_sheet.dart';
 import 'package:iterasi1/widget/itinerary_card.dart';
-import 'package:iterasi1/widget/itinerary_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../model/itinerary.dart';
-import '../widget/text_dialog.dart';
 
 class ItineraryList extends StatefulWidget {
   static const route = "/ItineraryListRoute";
@@ -46,6 +44,10 @@ class _ItineraryListState extends State<ItineraryList> {
     setState(() {
       dbProvider.refreshData(filterItineraryName: searchController.text);
     });
+  }
+
+  void _unfocusTextField() {
+    FocusScope.of(context).unfocus(); // Menghapus fokus dari TextField
   }
 
   @override
@@ -155,34 +157,6 @@ class _ItineraryListState extends State<ItineraryList> {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (snapshot.hasData) {
                       final itineraries = snapshot.data!;
-                      final filteredItineraries = itineraries.where((item) {
-                        return item.title
-                            .toLowerCase()
-                            .contains(searchController.text.toLowerCase());
-                      }).toList();
-
-                      // return GridView.builder(
-                      //   physics: const BouncingScrollPhysics(),
-                      //   padding: const EdgeInsets.all(12),
-                      //   gridDelegate:
-                      //       const SliverGridDelegateWithFixedCrossAxisCount(
-                      //     crossAxisCount: 2, // 2 kolom
-                      //     childAspectRatio: 1, // Rasio aspek tile
-                      //     crossAxisSpacing: 14,
-                      //     mainAxisSpacing: 14,
-                      //   ),
-                      //   itemCount: filteredItineraries.length,
-                      //   itemBuilder: (context, index) {
-                      //     final itinerary = filteredItineraries[index];
-                      //     return ItineraryTile(
-                      //       snackbarHandler: snackbarHandler,
-                      //       itinerary: itinerary,
-                      //       dbProvider: dbProvider,
-                      //       onDelete: _refreshData,
-                      //     );
-                      //   },
-                      // );
-
                       return ListView.separated(
                         physics: const BouncingScrollPhysics(),
                         padding: const EdgeInsets.symmetric(
@@ -194,6 +168,7 @@ class _ItineraryListState extends State<ItineraryList> {
                         itemBuilder: (context, index) {
                           final itinerary = itineraries[index];
                           return ItineraryCard(
+                            parentContext: context,
                             snackbarHandler: snackbarHandler,
                             itinerary: itinerary,
                             dbProvider: dbProvider,
@@ -215,11 +190,7 @@ class _ItineraryListState extends State<ItineraryList> {
   }
 
   Future<void> getItineraryTitle(BuildContext context) async {
-    // final itineraryTitle = await showTextDialog(
-    //   context,
-    //   title: "JUDUL ITINERARY",
-    //   value: "",
-    // );
+    _unfocusTextField(); // Tutup keyboard dan hapus fokus
     final result = await showModalBottomSheet<String>(
       backgroundColor: CustomColor.whiteColor,
       shape: const ContinuousRectangleBorder(
