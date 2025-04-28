@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:iterasi1/model/activity.dart';
@@ -6,6 +8,8 @@ import 'package:iterasi1/model/itinerary.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/provider/itinerary_provider.dart';
 import 'package:iterasi1/resource/theme.dart';
+import 'package:iterasi1/utilities/app_helper.dart';
+import 'package:iterasi1/widget/recommendaation_activity_card.dart';
 import 'package:provider/provider.dart';
 
 class SuggestionPage extends StatefulWidget {
@@ -30,15 +34,40 @@ class _SuggestionPageState extends State<SuggestionPage>
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (widget.itineraries.length < 2) {
+      return const Scaffold(
+        body: Center(child: Text("Data itinerary tidak cukup")),
+      );
+    }
+
     return Scaffold(
+      backgroundColor: CustomColor.whiteColor,
       appBar: AppBar(
         backgroundColor: CustomColor.primary,
-        title: const Text(
+        leading: Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: BackButton(
+            style: IconButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              foregroundColor: CustomColor.whiteColor,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        title: Text(
           "Rekomendasi Itinerary",
-          style: TextStyle(
-            fontFamily: 'poppins_bold',
-            fontSize: 20,
+          style: primaryTextStyle.copyWith(
+            fontSize: 18,
+            fontWeight: semibold,
             color: CustomColor.surface,
           ),
         ),
@@ -47,14 +76,16 @@ class _SuggestionPageState extends State<SuggestionPage>
       body: Column(
         children: [
           Container(
-            color: CustomColor.surface,
+            color: CustomColor.whiteColor,
             child: TabBar(
               controller: _tabController,
-              indicatorColor: CustomColor.buttonColor,
+              indicatorColor: CustomColor.primaryColor600,
               indicatorWeight: 3,
-              labelColor: CustomColor.buttonColor,
-              unselectedLabelColor: Colors.black,
-              labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+              labelColor: CustomColor.primaryColor600,
+              unselectedLabelColor: CustomColor.subtitleTextColor,
+              labelStyle: primaryTextStyle.copyWith(
+                fontWeight: semibold,
+              ),
               tabs: const [
                 Tab(text: "Rekomendasi 1"),
                 Tab(text: "Rekomendasi 2"),
@@ -65,225 +96,113 @@ class _SuggestionPageState extends State<SuggestionPage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildItineraryContent(index: _tabController.index),
-                _buildItineraryContent(
-                    index:
-                        _tabController.index), // Ganti konten jika diperlukan
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CustomColor.buttonColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                minimumSize: const Size(double.infinity, 48),
-              ),
-              onPressed: () {
-                for (var i = 0;
-                    i < widget.itineraries[_tabController.index].days.length;
-                    i++) {
-                  Day newDay = widget.itineraries[_tabController.index].days[i];
-                  context.read<ItineraryProvider>().addDay(newDay);
-                }
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AddDays(),
-                  ),
-                );
-              },
-              child: const Text(
-                "Pilih",
-                style: TextStyle(
-                  fontFamily: 'poppins_bold',
-                  fontSize: 20,
-                  color: CustomColor.surface,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildActivityCard(
-    BuildContext context,
-    Activity activity,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: CustomColor.primary,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        activity.activityName,
-                        textAlign: TextAlign.left,
-                        style: const TextStyle(
-                          fontFamily: 'poppins_bold',
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          IconData(0xe055, fontFamily: 'MaterialIcons'),
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                        const SizedBox(
-                          width: 9,
-                        ),
-                        Expanded(
-                          child: Text(
-                            activity.lokasi,
-                            textAlign: TextAlign.left,
-                            style: const TextStyle(
-                              fontFamily: 'poppins_bold',
-                              fontSize: 14,
-                              color: Colors.white,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.access_time_outlined,
-                          color: Colors.white,
-                          size: 14,
-                        ),
-                        const SizedBox(
-                          width: 9,
-                        ),
-                        Text(
-                          "${activity.startActivityTime} - ${activity.endActivityTime}",
-                          style: const TextStyle(
-                            fontFamily: 'poppins_bold',
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                Text(
-                  activity.keterangan,
-                  style: const TextStyle(
-                    fontFamily: 'poppins_regular',
-                    fontSize: 10,
-                    color: Colors.white,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
+                _buildItineraryContent(index: 0),
+                _buildItineraryContent(index: 1),
               ],
             ),
           ),
         ],
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: CustomColor.whiteColor,
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x19000000),
+              blurRadius: 24,
+              offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: CustomColor.primaryColor500,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+            ),
+            // padding: const EdgeInsets.symmetric(vertical: 16),
+            minimumSize: const Size(double.infinity, 48),
+          ),
+          onPressed: () {
+            log('Itinerary terpilih: ${_tabController.index}');
+            for (var i = 0;
+                i < widget.itineraries[_tabController.index].days.length;
+                i++) {
+              Day newDay = widget.itineraries[_tabController.index].days[i];
+              context.read<ItineraryProvider>().addDay(newDay);
+            }
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const AddDays(),
+              ),
+            );
+          },
+          child: Text(
+            "PILIH",
+            style: primaryTextStyle.copyWith(
+              fontSize: 18,
+              fontWeight: semibold,
+              color: CustomColor.surface,
+            ),
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildItineraryContent({required int index}) {
     return Container(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView.separated(
-        shrinkWrap:
-            true, // ListView ini akan menyesuaikan ukurannya dengan konten
-        itemCount: widget.itineraries[_tabController.index].days.length,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shrinkWrap: true,
+        itemCount: widget.itineraries[index].days.length,
         separatorBuilder: (context, index) {
-          return Divider(
-            height: 5,
-          );
+          return const SizedBox(height: 10);
         },
         itemBuilder: (context, indexDay) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Hari: ${DateFormat('EEEE, dd-MMM-yyyy', 'id_ID').format(
-                  DateTime(
-                    int.parse(widget
-                        .itineraries[_tabController.index].days[indexDay].date
-                        .split('/')[2]), // Tahun
-                    int.parse(widget
-                        .itineraries[_tabController.index].days[indexDay].date
-                        .split('/')[1]), // Bulan
-                    int.parse(widget
-                        .itineraries[_tabController.index].days[indexDay].date
-                        .split('/')[0]), // Tanggal
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: CustomColor.disabledColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(100.0),
                   ),
-                )}",
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                ),
+                child: Text(
+                  "Hari ke-${indexDay + 1} ${AppHelper.formatDate(widget.itineraries[index].days[indexDay].date)}",
+                  style: primaryTextStyle.copyWith(
+                    fontSize: 14,
+                    color: CustomColor.blackColor,
+                    // fontWeight: semibold,
+                    // fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-
-              SizedBox(
-                height: 10,
-              ),
-              // Gunakan shrinkWrap: true untuk ListView.builder
+              SizedBox(height: 10),
               ListView.separated(
                 physics: NeverScrollableScrollPhysics(),
                 separatorBuilder: (context, index) {
-                  return SizedBox(
-                    height: 10,
-                  );
+                  return SizedBox(height: 10);
                 },
-                shrinkWrap: true, // Menyesuaikan ukuran berdasarkan konten
-                itemCount: widget.itineraries[_tabController.index]
-                    .days[indexDay].activities.length,
+                shrinkWrap: true,
+                itemCount:
+                    widget.itineraries[index].days[indexDay].activities.length,
                 itemBuilder: (context, indexActivity) {
-                  List<Activity> activities = widget
-                      .itineraries[_tabController.index]
-                      .days[indexDay]
-                      .activities;
-                  return buildActivityCard(
-                    context,
-                    activities[indexActivity],
+                  List<Activity> activities =
+                      widget.itineraries[index].days[indexDay].activities;
+                  return RecommendaationActivityCard(
+                    data: activities[indexActivity],
                   );
                 },
               ),
-              SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: 10),
             ],
           );
         },

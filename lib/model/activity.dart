@@ -14,7 +14,7 @@ class Activity {
   List<String>? images; // Nullable List<String>
   List<String>? removedImages; // Nullable List<String>
 
-  static final _formatter = DateFormat.Hm();
+  static final _formatter = DateFormat('HH.mm', 'id_ID');
 
   Activity({
     String? id,

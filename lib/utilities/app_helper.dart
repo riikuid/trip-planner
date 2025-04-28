@@ -49,8 +49,8 @@ class AppHelper {
   static int calculateDurationInMinutes(String startTime, String endTime) {
     try {
       // Split the time strings to get hours and minutes
-      List<String> startParts = startTime.split(':');
-      List<String> endParts = endTime.split(':');
+      List<String> startParts = startTime.split('.');
+      List<String> endParts = endTime.split('.');
 
       if (startParts.length != 2 || endParts.length != 2) {
         throw FormatException('Invalid time format. Expected HH:MM');

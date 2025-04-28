@@ -28,6 +28,7 @@ abstract class CustomColor {
 
   static Color subtitleTextColor = const Color(0xFF808080);
   static Color hintTextColor = const Color(0xFFBAC2C7);
+  static Color warningColor = const Color(0xFFff3f56);
 
   static Color greyBackgroundColor = const Color(0xFFF9F9F9);
 

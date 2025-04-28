@@ -56,10 +56,13 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                     ),
                   ],
                 ),
-                Icon(
-                  Icons.close,
-                  size: 20,
-                  color: CustomColor.subtitleTextColor,
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(
+                    Icons.close,
+                    size: 20,
+                    color: CustomColor.subtitleTextColor,
+                  ),
                 ),
               ],
             ),
@@ -120,7 +123,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
               height: 10,
             ),
             SizedBox(
-              height: 50,
+              height: 45,
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -128,7 +131,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                       ? CustomColor.primaryColor500
                       : CustomColor.disabledColor,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(100.0),
                   ),
                 ),
                 onPressed: isEnable
@@ -146,7 +149,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
                       }
                     : () {},
                 child: _isLoading
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : Text(
                         "SELANJUTNYA",
                         style: primaryTextStyle.copyWith(

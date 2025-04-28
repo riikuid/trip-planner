@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iterasi1/pages/itinerary_list.dart';
@@ -43,6 +44,16 @@ class MyApp extends StatelessWidget {
             child: MaterialApp(
               home: const SplashScreen(),
               debugShowCheckedModeBanner: false,
+              locale: const Locale('id', 'ID'),
+              supportedLocales: const [
+                Locale('id', 'ID'),
+                Locale('en', 'US'), // Fallback
+              ],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
               routes: {
                 ItineraryList.route: (context) => ItineraryList(),
               },

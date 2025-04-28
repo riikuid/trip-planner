@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-// import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/pages/add_activities/form_suggestion.dart';
 import 'package:iterasi1/pages/add_days/add_days.dart';
 import 'package:iterasi1/provider/database_provider.dart';
@@ -32,7 +33,24 @@ class _SelectDateState extends State<SelectDate> {
   @override
   void initState() {
     super.initState();
-    selectedDates = widget.initialDates;
+    // Inisialisasi selectedDates dengan rentang awal
+
+    if (widget.initialDates.isNotEmpty && widget.initialDates.length >= 2) {
+      DateTime startDate = widget.initialDates.first;
+      DateTime endDate = widget.initialDates.last;
+      if (startDate.isBefore(endDate) &&
+          startDate.isAfter(DateTime.now().subtract(const Duration(days: 1)))) {
+        for (DateTime date = startDate;
+            date.isBefore(endDate.add(const Duration(days: 1)));
+            date = date.add(const Duration(days: 1))) {
+          selectedDates.add(date);
+        }
+        selectedDates = selectedDates
+            .where((date) =>
+                date.isAfter(DateTime.now().subtract(const Duration(days: 1))))
+            .toList();
+      }
+    }
   }
 
   onSimpanDate() {
@@ -69,7 +87,7 @@ class _SelectDateState extends State<SelectDate> {
             'Pilih Tanggal',
             style: primaryTextStyle.copyWith(
               fontWeight: semibold,
-              fontSize: 20,
+              fontSize: 18,
               // fontFamily: 'poppins_bold',
               color: CustomColor.whiteColor,
             ),
@@ -103,35 +121,77 @@ class _SelectDateState extends State<SelectDate> {
                       Container(
                         padding: const EdgeInsets.all(15.0),
                         child: SfDateRangePicker(
+                          initialDisplayDate: widget.initialDates.isNotEmpty
+                              ? widget.initialDates.first
+                              : null,
+                          initialSelectedRange: widget.initialDates.length >=
+                                      2 &&
+                                  widget.initialDates.first.isAfter(
+                                      DateTime.now()
+                                          .subtract(const Duration(days: 1))) &&
+                                  widget.initialDates.first
+                                      .isBefore(widget.initialDates.last)
+                              ? PickerDateRange(
+                                  widget.initialDates.first,
+                                  widget.initialDates.last,
+                                )
+                              : null,
                           selectionColor: CustomColor.primaryColor500,
+                          startRangeSelectionColor: CustomColor.primaryColor500,
+                          endRangeSelectionColor: CustomColor.primaryColor500,
+                          rangeSelectionColor: CustomColor.primaryColor100,
                           backgroundColor: CustomColor.whiteColor,
                           todayHighlightColor: CustomColor.subtitleTextColor,
                           selectionTextStyle: const TextStyle(
                             color: Colors.black,
                           ),
-                          initialSelectedDates: widget.initialDates,
-                          selectionMode: DateRangePickerSelectionMode.multiple,
+                          selectionMode: DateRangePickerSelectionMode.range,
                           showNavigationArrow: true,
+                          selectionRadius: 20,
                           minDate: DateTime.now(),
                           onSelectionChanged:
                               (DateRangePickerSelectionChangedArgs? args) {
-                            if (args?.value is List<DateTime>) {
-                              final dates = args?.value as List<DateTime>;
-                              setState(
-                                () {
-                                  selectedDates = dates
+                            if (args?.value is PickerDateRange) {
+                              final PickerDateRange range =
+                                  args!.value as PickerDateRange;
+                              final DateTime? startDate = range.startDate;
+                              final DateTime? endDate = range.endDate;
+
+                              // Jika ada startDate dan endDate, buat daftar tanggal dalam rentang
+                              if (startDate != null && endDate != null) {
+                                List<DateTime> datesInRange = [];
+                                for (DateTime date = startDate;
+                                    date.isBefore(
+                                        endDate.add(const Duration(days: 1)));
+                                    date = date.add(const Duration(days: 1))) {
+                                  datesInRange.add(date);
+                                }
+
+                                setState(() {
+                                  selectedDates = datesInRange
                                       .where(
                                         (date) => date.isAfter(
                                           DateTime.now().subtract(
-                                            const Duration(days: 1),
-                                          ),
+                                              const Duration(days: 1)),
                                         ),
                                       )
                                       .toList();
-                                  // ignore: avoid_print
-                                  print(selectedDates);
-                                },
-                              );
+                                  log(selectedDates.toString());
+                                });
+                              } else if (startDate != null) {
+                                // Jika hanya startDate yang dipilih (belum ada endDate)
+                                setState(() {
+                                  selectedDates = [startDate]
+                                      .where(
+                                        (date) => date.isAfter(
+                                          DateTime.now().subtract(
+                                              const Duration(days: 1)),
+                                        ),
+                                      )
+                                      .toList();
+                                  log(selectedDates.toString());
+                                });
+                              }
                             }
                           },
                           headerStyle: DateRangePickerHeaderStyle(
@@ -140,7 +200,6 @@ class _SelectDateState extends State<SelectDate> {
                             textStyle: primaryTextStyle.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
-                              // fontFamily: 'poppins_bold',
                               color: Colors.black,
                             ),
                           ),

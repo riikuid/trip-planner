@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
-import 'dart:developer' as dev;
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -18,10 +17,8 @@ import 'package:iterasi1/provider/database_provider.dart';
 import 'package:iterasi1/resource/theme.dart';
 import 'package:iterasi1/widget/activity_card.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-// import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../model/activity.dart';
 import '../../provider/itinerary_provider.dart';
@@ -215,6 +212,10 @@ class _AddDaysState extends State<AddDays> {
                           alignment: Alignment.centerRight,
                           child: InkWell(
                             onTap: () {
+                              log(itineraryProvider.itinerary.days
+                                  .map((e) => e.getDatetime())
+                                  .toList()
+                                  .toString());
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) {
@@ -359,8 +360,7 @@ class _AddDaysState extends State<AddDays> {
                                         activities: itineraryProvider.itinerary
                                             .days[selectedDayIndex].activities,
                                         newActivity: newActivity);
-                                    dev.log(
-                                        "${itineraryProvider.itinerary.days[selectedDayIndex].activities.length}");
+                                    log("${itineraryProvider.itinerary.days[selectedDayIndex].activities.length}");
                                   },
                                 );
                               },
@@ -757,41 +757,79 @@ class _AddDaysState extends State<AddDays> {
         return AlertDialog(
           backgroundColor: Colors.white, // Ubah warna latar belakang
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0), // Ubah bentuk border
+            borderRadius: BorderRadius.circular(12.0), // Ubah bentuk border
           ),
-          title: const Text(
-            "Konfirmasi",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'poppins_bold',
-              color: Color(0xFFC58940), // Ubah warna teks judul
-              fontWeight: FontWeight.bold, // Teks judul menjadi tebal
+          title: Column(
+            children: [
+              Container(
+                // alignment: Alignment.center,
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(100.0),
+                  ),
+                  color: CustomColor.warningColor.withOpacity(0.2),
+                ),
+                child: Icon(
+                  Icons.warning_rounded,
+                  size: 40,
+                  color: CustomColor.warningColor,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Konfirmasi Perubahan Itinerary",
+                textAlign: TextAlign.center,
+                style: primaryTextStyle.copyWith(
+                  // fontFamily: 'poppins_bold',
+                  color: CustomColor.blackColor, // Ubah warna teks judul
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold, // Teks judul menjadi tebal
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            "Itinerary Anda telah diubah. Simpan sebelum keluar?",
+            style: primaryTextStyle.copyWith(
+              fontSize: 14,
+              color: CustomColor.subtitleTextColor,
             ),
+            textAlign: TextAlign.center,
           ),
           actions: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  child: TextButton(
-                    onPressed: () {
+                  child: InkWell(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(12.0),
+                    ),
+                    onTap: () {
                       Navigator.of(context)
                           .pop(AlertSaveDialogResult.saveWithoutQuit);
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.red, // Ubah warna latar belakang
+                        color: CustomColor
+                            .warningColor, // Ubah warna latar belakang
                         borderRadius:
                             BorderRadius.circular(8), // Ubah bentuk border
                       ),
                       padding: const EdgeInsets.symmetric(
-                          vertical: 12), // Atur padding
-                      child: const Text(
-                        "Keluar Tanpa Simpan",
+                        vertical: 8,
+                      ), // Atur padding
+                      child: Text(
+                        "Keluar Tanpa Menyimpan",
                         textAlign:
                             TextAlign.center, // Pusatkan teks dalam tombol
-                        style: TextStyle(
-                          fontFamily: 'poppins_bold',
+                        style: primaryTextStyle.copyWith(
+                          // fontFamily: 'poppins_bold',
+                          fontSize: 12,
+                          fontWeight: semibold,
                           color: Colors.white, // Ubah warna teks
                         ),
                       ),
@@ -806,18 +844,22 @@ class _AddDaysState extends State<AddDays> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.green, // Ubah warna latar belakang
+                        color: Color(0xFF4FD968), // Ubah warna latar belakang
                         borderRadius:
                             BorderRadius.circular(8), // Ubah bentuk border
                       ),
                       padding: const EdgeInsets.symmetric(
-                          vertical: 12), // Atur padding
-                      child: const Text(
-                        "Keluar dan Simpan",
+                        vertical: 8,
+                        horizontal: 4,
+                      ), // Atur padding
+                      child: Text(
+                        "Simpan dan Keluar",
                         textAlign:
                             TextAlign.center, // Pusatkan teks dalam tombol
-                        style: TextStyle(
-                          fontFamily: 'poppins_bold',
+                        style: primaryTextStyle.copyWith(
+                          // fontFamily: 'poppins_bold',
+                          fontSize: 12,
+                          fontWeight: semibold,
                           color: Colors.white, // Ubah warna teks
                         ),
                       ),

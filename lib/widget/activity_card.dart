@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:iterasi1/model/activity.dart';
 import 'package:iterasi1/pages/activity_photo_page.dart';
@@ -399,127 +397,132 @@ class ActivityCard extends StatelessWidget {
                 color: CustomColor.primaryColor50,
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
+                alignment: Alignment.topRight,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              const IconData(0xe055,
-                                  fontFamily: 'MaterialIcons'),
-                              color: CustomColor.subtitleTextColor,
-                              size: 15,
-                            ),
-                            const SizedBox(width: 9),
-                            Expanded(
-                              child: Text(
-                                data.lokasi,
-                                textAlign: TextAlign.left,
-                                style: primaryTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: semibold,
-                                  color: CustomColor.subtitleTextColor,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          data.activityName,
-                          textAlign: TextAlign.left,
-                          style: primaryTextStyle.copyWith(
-                            fontSize: 20,
-                            fontWeight: semibold,
-                            color: CustomColor.primaryColor900,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 4),
-                        Row(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                Text(
-                                  'MULAI',
-                                  style: primaryTextStyle.copyWith(
-                                    fontWeight: regular,
-                                    fontSize: 12,
-                                    color: CustomColor.subtitleTextColor,
-                                  ),
+                                Icon(
+                                  const IconData(0xe055,
+                                      fontFamily: 'MaterialIcons'),
+                                  color: CustomColor.subtitleTextColor,
+                                  size: 15,
                                 ),
-                                Text(
-                                  data.startActivityTime,
-                                  style: primaryTextStyle.copyWith(
-                                    fontWeight: regular,
-                                    fontSize: 16,
-                                    color: CustomColor.subtitleTextColor,
+                                const SizedBox(width: 9),
+                                Expanded(
+                                  child: Text(
+                                    data.lokasi,
+                                    textAlign: TextAlign.left,
+                                    style: primaryTextStyle.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: semibold,
+                                      color: CustomColor.subtitleTextColor,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
                             ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 4,
+                            const SizedBox(height: 4),
+                            Text(
+                              data.activityName,
+                              textAlign: TextAlign.left,
+                              style: primaryTextStyle.copyWith(
+                                fontSize: 20,
+                                fontWeight: semibold,
+                                color: CustomColor.primaryColor900,
                               ),
-                              decoration: BoxDecoration(
-                                color: CustomColor.primaryColor300,
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(50.0),
-                                ),
-                              ),
-                              child: Text(
-                                '${AppHelper.calculateDurationInMinutes(data.startActivityTime, data.endActivityTime)} Mins',
-                                style: primaryTextStyle.copyWith(
-                                  fontWeight: semibold,
-                                  color: CustomColor.whiteColor,
-                                  fontSize: 10,
-                                ),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            const SizedBox(height: 4),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text(
-                                  'SELESAI',
-                                  style: primaryTextStyle.copyWith(
-                                    fontWeight: regular,
-                                    fontSize: 12,
-                                    color: CustomColor.subtitleTextColor,
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'MULAI',
+                                      style: primaryTextStyle.copyWith(
+                                        fontWeight: regular,
+                                        fontSize: 12,
+                                        color: CustomColor.subtitleTextColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      data.startActivityTime,
+                                      style: primaryTextStyle.copyWith(
+                                        fontWeight: regular,
+                                        fontSize: 16,
+                                        color: CustomColor.subtitleTextColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: CustomColor.primaryColor300,
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(50.0),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '${AppHelper.calculateDurationInMinutes(data.startActivityTime, data.endActivityTime)} Mins',
+                                    style: primaryTextStyle.copyWith(
+                                      fontWeight: semibold,
+                                      color: CustomColor.whiteColor,
+                                      fontSize: 10,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-                                Text(
-                                  data.endActivityTime,
-                                  style: primaryTextStyle.copyWith(
-                                    fontWeight: regular,
-                                    fontSize: 16,
-                                    color: CustomColor.subtitleTextColor,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'SELESAI',
+                                      style: primaryTextStyle.copyWith(
+                                        fontWeight: regular,
+                                        fontSize: 12,
+                                        color: CustomColor.subtitleTextColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      data.endActivityTime,
+                                      style: primaryTextStyle.copyWith(
+                                        fontWeight: regular,
+                                        fontSize: 16,
+                                        color: CustomColor.subtitleTextColor,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

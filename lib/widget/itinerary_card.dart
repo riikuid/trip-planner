@@ -61,7 +61,7 @@ class ItineraryCard extends StatelessWidget {
           children: [
             IntrinsicHeight(
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
@@ -172,39 +172,42 @@ class ItineraryCard extends StatelessWidget {
                           ),
                       ],
                     ),
-                  )
+                  ),
+                  InkWell(
+                    onTap: () {
+                      snackbarHandler.removeCurrentSnackBar();
+                      final itineraryCopy = itinerary.copy();
+                      dbProvider
+                          .deleteItinerary(itinerary: itinerary)
+                          .whenComplete(
+                        () {
+                          onDelete?.call(); // Refresh daftar setelah hapus
+                          snackbarHandler.showSnackBar(
+                            SnackBar(
+                              content: const Text("Item dihapus!"),
+                              action: SnackBarAction(
+                                label: "Undo",
+                                onPressed: () {
+                                  dbProvider.insertItinerary(
+                                    itinerary: itineraryCopy,
+                                  );
+                                  onDelete?.call(); // Refresh setelah undo
+                                  snackbarHandler.removeCurrentSnackBar();
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      size: 18,
+                      color: CustomColor.primaryColor900,
+                      weight: 50,
+                    ),
+                  ),
                 ],
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                snackbarHandler.removeCurrentSnackBar();
-                final itineraryCopy = itinerary.copy();
-                dbProvider.deleteItinerary(itinerary: itinerary).whenComplete(
-                  () {
-                    onDelete?.call(); // Refresh daftar setelah hapus
-                    snackbarHandler.showSnackBar(
-                      SnackBar(
-                        content: const Text("Item dihapus!"),
-                        action: SnackBarAction(
-                          label: "Undo",
-                          onPressed: () {
-                            dbProvider.insertItinerary(
-                                itinerary: itineraryCopy);
-                            onDelete?.call(); // Refresh setelah undo
-                            snackbarHandler.removeCurrentSnackBar();
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Icon(
-                Icons.cancel,
-                size: 18,
-                color: CustomColor.primaryColor500,
-                weight: 50,
               ),
             ),
           ],
